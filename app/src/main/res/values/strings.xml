@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Popular Movies Stage 2</string>
+    <string name="sort_most_popular">Sort by Most Popular</string>
+    <string name="sort_top_rated">Sort by Top Rated</string>
+    <string name="cd_movie_poster">The Movie\'s poster thumbnail.</string>
+    <string name="release_date">Release Date</string>
+    <string name="user_rating">User Rating</string>
+    <string name="mark_favorite">Mark as Favorite</string>
+    <string name="favorited">Favorite</string>
+    <string name="favorites">Favorites</string>
+    <string name="trailers">Trailers</string>
+    <string name="trailer">Trailer</string>
+    <string name="user_reviews">User Reviews</string>
+    <string name="user_review_author">Author</string>
+    <string name="user_review_content">REVIEW CONTENT</string>
+</resources>
