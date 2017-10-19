@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final String MOVIE_URL_EXTRA = "movie_url";
     private static final String MOVIE_SORT_TYPE_EXTRA = "sort_type";
     private static final int MOVIE_LOADER_ID = 31;
+    private static int currentView;
 
     private static final String RV_SAVE_STATE = "RecyclerViewSaveState";
     GridLayoutManager gridLayoutManager;
@@ -61,13 +62,15 @@ public class MainActivity extends AppCompatActivity implements
 
         // On first launch, fetch some data.
         if (savedInstanceState == null) {
-            fetchMovies();
+            currentView = R.id.action_sort_most_popular;
+            fetchMovies(currentView);
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        fetchMovies(currentView);
     }
 
     @Override
@@ -95,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int menuItemSelected = item.getItemId();
+        currentView = menuItemSelected;
         switch (menuItemSelected) {
             case R.id.action_sort_most_popular:
                 fetchMovies(R.id.action_sort_most_popular);
