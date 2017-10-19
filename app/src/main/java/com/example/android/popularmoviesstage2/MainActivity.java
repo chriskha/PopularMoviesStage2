@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -37,6 +38,9 @@ public class MainActivity extends AppCompatActivity implements
     private static final String MOVIE_SORT_TYPE_EXTRA = "sort_type";
     private static final int MOVIE_LOADER_ID = 31;
 
+    private static final String RV_SAVE_STATE = "RecyclerViewSaveState";
+    GridLayoutManager gridLayoutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,18 +48,21 @@ public class MainActivity extends AppCompatActivity implements
 
         mMoviesGrid = (RecyclerView) findViewById(R.id.rv_movies);
 
-        fetchMovies();
-
         // Create GridLayoutManager
-        GridLayoutManager layoutManager = new GridLayoutManager(this, GRID_SPAN);
-        mMoviesGrid.setLayoutManager(layoutManager);
-
-        mMoviesGrid.setHasFixedSize(true);
+        gridLayoutManager = new GridLayoutManager(this, GRID_SPAN);
 
         mAdapter = new MovieAdapter(this);
         mMoviesGrid.setAdapter(mAdapter);
 
+        mMoviesGrid.setLayoutManager(gridLayoutManager);
+        mMoviesGrid.setHasFixedSize(true);
 
+        getSupportLoaderManager().initLoader(MOVIE_LOADER_ID, null, this);
+
+        // On first launch, fetch some data.
+        if (savedInstanceState == null) {
+            fetchMovies();
+        }
     }
 
     @Override
@@ -113,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements
     public Loader<Cursor> onCreateLoader(int id, final Bundle args) {
         return new AsyncTaskLoader<Cursor>(this) {
 
-            Cursor mMovieData = null;
+            Cursor mMovieData;
 
             @Override
             protected void onStartLoading() {
@@ -199,6 +206,25 @@ public class MainActivity extends AppCompatActivity implements
             loaderManager.restartLoader(MOVIE_LOADER_ID, bundle, this);
         }
 
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            // Restore the state of GridLayoutManager if we saved it.
+            Parcelable savedState = savedInstanceState.getParcelable(RV_SAVE_STATE);
+            gridLayoutManager.onRestoreInstanceState(savedState);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // Save state of our RecyclerView using GridLayoutManager as freebie.
+        outState.putParcelable(RV_SAVE_STATE, gridLayoutManager.onSaveInstanceState());
     }
 
 }
